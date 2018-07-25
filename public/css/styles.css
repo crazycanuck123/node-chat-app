@@ -127,7 +127,7 @@ button:disabled {
 }
 
 .chat__main div{
-  display: inline-block !important;
+  /*display: inline-block !important;*/
 }
 
 .chat__messages {
