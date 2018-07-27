@@ -34,6 +34,7 @@
 
   socket.on('updateUserList', function (users) {
     var template = $('#people-template').html();
+    console.log(users);
     $('#userList').empty();
     users.forEach(function (user){
       var html = Mustache.render(template, {

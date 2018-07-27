@@ -10,15 +10,15 @@ describe('Users', () => {
     users.users = [{
       id: '1',
       name: 'Mike',
-      room: 'Node Course'
+      room: 'node course'
     },{
       id: '2',
       name: 'Jen',
-      room: 'React Course'
+      room: 'react course'
     },{
       id: '3',
       name: 'Julie',
-      room: 'Node Course'
+      room: 'node course'
     },]
   });
 
@@ -27,7 +27,7 @@ describe('Users', () => {
     var user = {
       id: '123',
       name: 'Matt',
-      room: 'The Office Fans'
+      room: 'the office fans'
     };
     var resUser = users.addUser(user.id, user.name, user.room);
 
@@ -71,4 +71,17 @@ describe('Users', () => {
 
     expect(userList).toEqual(['Jen']);
   });
+
+  it('should return false', () => {
+    var userCheck = users.checkUser('Mike');
+
+    expect(userCheck).toEqual(true);
+  });
+
+  it('should return list of rooms already made', () => {
+    var rooms = users.getRoomList();
+
+    expect(rooms).toEqual(['node course', 'react course'])
+  });
+
 });

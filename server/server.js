@@ -16,7 +16,10 @@ var users = new Users();
 
 app.use(express.static(publicPath));
 
+
+
 io.on('connection', (socket) =>{
+  io.emit('updateRoomsList', users.getRoomList());
   console.log('New User connected');
 
   // socket.emit from admin text Welcome to the Chat app
@@ -24,18 +27,22 @@ io.on('connection', (socket) =>{
 
   socket.on('join', (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
-      return callback('Name and room name are required.')
+      return callback('Name and room name are required.');
+    }
+    if (users.checkUser(params.name)) {
+      return callback('Unique Name Required');
+    } else {
+      socket.join(params.room);
+      users.removeUser(socket.id);
+      users.addUser(socket.id, params.name, params.room);
+      io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+      io.emit('updateRoomsList', users.getRoomList());
+      socket.emit('newMessage', generateMessage('Admin', 'Welcome to the App.'));
+      socket.broadcast.to(params.room).emit('newUser', generateMessage('Admin', `${params.name} has joined.`));
+      callback();
     }
 
-    socket.join(params.room);
-    users.removeUser(socket.id);
-    users.addUser(socket.id, params.name, params.room);
 
-    io.to(params.room).emit('updateUserList', users.getUserList(params.room));
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the App.'));
-    socket.broadcast.to(params.room).emit('newUser', generateMessage('Admin', `${params.name} has joined.`));
-
-    callback();
   });
 
   socket.on('createMessage', (newMessage, callback) => {
